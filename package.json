@@ -1,0 +1,30 @@
+{
+  "name": "mapbox-data-cli",
+  "version": "1.0.0",
+  "description": "download and upload mapbox data as geojson",
+  "main": "index.js",
+  "bin": {
+    "mapbox-data-get": "mapbox-data-get",
+    "mapbox-data-put": "mapbox-data-put"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "mapbox",
+    "markers",
+    "clic"
+  ],
+  "author": "Tom MacWright",
+  "license": "ISC",
+  "dependencies": {
+    "101": "^0.18.0",
+    "got": "^3.2.0",
+    "minimist": "^1.1.1"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "manage data within the mapbox data api"
+  }
+}
