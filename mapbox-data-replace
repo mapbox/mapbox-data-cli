@@ -1,0 +1,68 @@
+#!/usr/bin/env node
+
+var got = require('got'),
+    fs = require('fs'),
+    queue = require('queue-async'),
+    argv = require('minimist')(process.argv.slice(2));
+
+var MAPBOX = 'https://www.mapbox.com/core/';
+var API = MAPBOX + 'datasets/v1/';
+
+if (!process.env.MapboxAccessToken) throw new Error('MapboxAccessToken env variable required');
+
+if (argv.mapid) {
+    replaceMapid(argv.user, argv.mapid, argv._[0]);
+} else if (argv.datasetid) {
+    replaceDataset(argv.user, argv.datasetid, argv._[0]);
+} else {
+    throw new Error('must provide --mapid or --datasetid option');
+}
+
+function at(str) {
+    return str + '?access_token=' + process.env.MapboxAccessToken;
+}
+
+function replaceMapid(user, mapid, input) {
+    got(at(MAPBOX + 'api/Map/' + mapid), {
+        json: true
+    }, function(err, res) {
+        if (err) throw err;
+        console.error('inferred dataset id from mapid: %s\n', res.dataset);
+        replaceDataset(user, res.dataset, input);
+    });
+}
+
+function replaceDataset(user, id, input) {
+    var data = fs.readFileSync(input, 'utf8'),
+        parsed = JSON.parse(data);
+
+
+    got(at(API + user + '/' + id + '/features'), {
+        json: true
+    }, function(err, res) {
+        if (err) throw err;
+        var q = queue(2);
+        console.error('deleting %s features', res.features.length);
+        res.features.forEach(function(feature) {
+            q.defer(got.delete, at(API + user + '/' + id + '/features/' + feature.id));
+        });
+        q.awaitAll(function(err, res) {
+            if (err) throw err;
+            putDataset();
+        });
+    });
+
+    function putDataset() {
+        if (!parsed.features.length) return console.error('no features to add');
+        got.post(at(API + user + '/' + id + '/features'), {
+            body: data,
+            headers: {
+                'Content-Length': data.length,
+                'Content-Type': 'application/json'
+            }
+        }, function(err, res) {
+            if (err) throw err;
+            console.log(res);
+        });
+    }
+}
