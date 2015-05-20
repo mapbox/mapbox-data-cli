@@ -18,7 +18,6 @@
   "author": "Tom MacWright",
   "license": "ISC",
   "dependencies": {
-    "101": "^0.18.0",
     "got": "^3.2.0",
     "minimist": "^1.1.1"
   },

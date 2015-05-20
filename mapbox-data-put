@@ -1,0 +1,41 @@
+#!/usr/bin/env node
+
+var got = require('got'),
+    fs = require('fs'),
+    argv = require('minimist')(process.argv.slice(2));
+
+var MAPBOX = 'https://www.mapbox.com/core/';
+var API = MAPBOX + 'datasets/v1/';
+
+if (!process.env.MapboxAccessToken) throw new Error('MapboxAccessToken env variable required');
+
+if (argv.mapid) {
+    putMapid(argv.user, argv.mapid, argv._[0]);
+} else if (argv.datasetid) {
+    putDataset(argv.user, argv.datasetid, argv._[0]);
+} else {
+    throw new Error('must provide --mapid or --datasetid option');
+}
+
+function putMapid(user, mapid, input) {
+    got(MAPBOX + 'api/Map/' + mapid + '?access_token=' + process.env.MapboxAccessToken, {
+        json: true
+    }, function(err, res) {
+        if (err) throw err;
+        console.error('inferred dataset id from mapid: %s\n', res.dataset);
+        putDataset(user, res.dataset, input);
+    });
+}
+
+function putDataset(user, id, input) {
+    var data = fs.readFileSync(input, 'utf8');
+    got.post(API + user + '/' + id + '/features?access_token=' + process.env.MapboxAccessToken, {
+        body: data,
+        headers: {
+            'Content-Length': data.length,
+            'Content-Type': 'application/json'
+        }
+    }, function(err, res) {
+        console.log(res);
+    });
+}
