@@ -22,6 +22,7 @@
     "get-stdin": "^4.0.1",
     "got": "^3.2.0",
     "queue-async": "^1.0.7",
+    "update-notifier": "^0.5.0",
     "yargs": "^3.9.1"
   },
   "devDependencies": {},

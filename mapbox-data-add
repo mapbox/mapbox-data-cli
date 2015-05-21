@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+require('update-notifier')({ pkg: require('./package.json') }).notify();
 var add = require('./lib/add');
 var argv = require('yargs')
     .usage('Usage: [user] [mapid or datasetid] [data?]')

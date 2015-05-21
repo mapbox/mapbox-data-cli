@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+require('update-notifier')({ pkg: require('./package.json') }).notify();
 var del = require('./lib/del'),
     add = require('./lib/add');
 
