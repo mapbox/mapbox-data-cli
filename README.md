@@ -2,7 +2,17 @@
 
 CLI utilties for [Mapbox](https://www.mapbox.com/) Data API.
 
+## Install
+
+```sh
+$ npm install -g mapbox-markers-cli
+```
+
+## Setup
+
 Requires a `MapboxAccessToken` environment variable with map:write permissions.
+
+## Utilities
 
 Includes three utilities
 
