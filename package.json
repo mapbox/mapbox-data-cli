@@ -19,6 +19,8 @@
   "author": "Tom MacWright",
   "license": "ISC",
   "dependencies": {
+    "animate-tty": "^1.0.3",
+    "chunk": "0.0.2",
     "geojsonhint": "^1.0.0",
     "get-stdin": "^4.0.1",
     "got": "^3.2.0",

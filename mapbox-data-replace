@@ -9,8 +9,10 @@ var argv = require('yargs')
     .demand(2)
     .argv;
 
+console.error('removing existing features');
 del(argv._[0], argv._[1], function(e) {
     if (e) throw e;
+    console.error('adding new features');
     add(argv._[0], argv._[1], argv._[2], function(err, res, data) {
         if (err) throw err;
         console.error('added/uploaded %s features', JSON.parse(data).features.length);
