@@ -1,6 +1,6 @@
 {
   "name": "mapbox-data-cli",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "download and upload mapbox data as geojson",
   "main": "index.js",
   "bin": {
