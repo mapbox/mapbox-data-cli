@@ -1,28 +1,31 @@
 # mapbox-markers-cli
 
+CLI utilties for [Mapbox](https://www.mapbox.com/) Data API.
+
 Requires a `MapboxAccessToken` environment variable with map:write permissions.
 
 Includes three utilities
 
-* `mapbox-data-get`: get GeoJSON data
+* `mapbox-data-get`: get [GeoJSON](http://geojson.org/) data
 * `mapbox-data-add`: add/update features in a dataset
 * `mapbox-data-replace`: replace dataset with new GeoJSON data
 
-They have common options:
-
-* `--userid` required for all commands. Your mapbox user id.
-* `--mapid` or `--datasetid`. `--datasetid` is preferred, otherwise the library
-  has to look up what dataset is referred to by each map
+DATASETID can either be a dataset id (preferred) or a map id. If a map id
+is given, mapbox-markers-cli will infer the dataset id.
 
 ```sh
 $ npm install -g mapbox-markers-cli
+$ mapbox-data-get USERNAME DATASETID
+$ mapbox-data-add USERNAME DATASETID FILE
+$ mapbox-data-replace USERNAME DATASETID FILE
+```
 
-$ mapbox-data-get --userid=USER --datasetid=DATASETID
-$ mapbox-data-get --userid=USER --mapid=MAPID
+## Pipes
 
-$ mapbox-data-add --userid=USER --datasetid=DATASETID geojsonfile.geojson
-$ mapbox-data-add --userid=USER --mapid=MAPID geojsonfile.geojson
+`mapbox-data-add` and `mapbox-data-replace` support stdin: you can pipe
+into them, and they'll put the data on [Mapbox](https://www.mapbox.com/).
 
-$ mapbox-data-replace --userid=USER --datasetid=DATASETID geojsonfile.geojson
-$ mapbox-data-replace --userid=USER --mapid=MAPID geojsonfile.geojson
+```sh
+$ npm install -g geojson-random # util that generates random geojson
+$ geojson-random | mapbox-data-add USERNAME DATASETID
 ```
