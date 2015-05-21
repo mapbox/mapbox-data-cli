@@ -1,6 +1,8 @@
 # mapbox-markers-cli
 
-CLI utilties for [Mapbox](https://www.mapbox.com/) Data API.
+[![NPM](https://nodei.co/npm/mapbox-data-cli.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/mapbox-data-cli/)
+
+CLI utilities for [Mapbox](https://www.mapbox.com/) Data API.
 
 ## Install
 
