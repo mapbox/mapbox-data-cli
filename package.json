@@ -19,6 +19,7 @@
   "author": "Tom MacWright",
   "license": "ISC",
   "dependencies": {
+    "geojsonhint": "^1.0.0",
     "get-stdin": "^4.0.1",
     "got": "^3.2.0",
     "queue-async": "^1.0.7",
