@@ -32,6 +32,13 @@ $ mapbox-data-add USERNAME DATASETID FILE
 $ mapbox-data-replace USERNAME DATASETID FILE
 ```
 
+`mapbox-data-create` creates a new empty dataset. NAME and DESCRIPTION are
+optional.
+
+```sh
+$ mapbox-data-create USERNAME [NAME] [DESCRIPTION]
+```
+
 ## Pipes
 
 `mapbox-data-add` and `mapbox-data-replace` support stdin: you can pipe

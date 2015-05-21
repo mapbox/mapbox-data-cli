@@ -6,6 +6,7 @@
   "bin": {
     "mapbox-data-get": "mapbox-data-get",
     "mapbox-data-replace": "mapbox-data-replace",
+    "mapbox-data-create": "mapbox-data-create",
     "mapbox-data-add": "mapbox-data-add"
   },
   "scripts": {

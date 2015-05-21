@@ -1,0 +1,15 @@
+#!/usr/bin/env node
+
+require('update-notifier')({ pkg: require('./package.json') }).notify();
+var create = require('./lib/create');
+
+var argv = require('yargs')
+    .usage('Usage: [user] [name] [description?]')
+    .demand(1)
+    .argv;
+
+console.error('creating dataset');
+create(argv._[0], argv._[1], argv._[2], function(e, datasetid) {
+    if (e) throw e;
+    console.log(datasetid);
+});
