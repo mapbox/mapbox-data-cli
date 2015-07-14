@@ -9,7 +9,7 @@ CLI utilities for [Mapbox](https://www.mapbox.com/) Data API.
 ## Install
 
 ```sh
-$ npm install -g mapbox-markers-cli
+$ npm install -g mapbox-data-cli
 ```
 
 ## Setup
