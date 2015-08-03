@@ -16,11 +16,11 @@ var testFeatures = [];
 process.env.PATH = [ path.resolve(__dirname, '..'), process.env.PATH ].join(':');
 
 test('create: create a dataset', function(t) {
-    var cmd = create;
+    var cmd = [create, '--user', 'mapbox'].join(' ');
     exec(cmd, function(err, stdout, stderr) {
         t.ifError(err, 'user exists');
         var dataset = JSON.parse(stdout);
-        t.equal(dataset.owner, 'jakepruitt', 'jakepruitt is the owner');
+        t.equal(dataset.owner, 'mapbox', 'mapbox is the owner');
         t.ok(dataset.id, 'dataset has id');
         t.ok(dataset.created, 'dataset as a created date');
         t.ok(dataset.modified, 'dataset has a modified date');
@@ -30,7 +30,7 @@ test('create: create a dataset', function(t) {
 });
 
 test('add: add features to a dataset', function(t) {
-    var cmd = [add, testDataset, validFeatures].join(' ');
+    var cmd = [add, testDataset, validFeatures, '--user', 'mapbox'].join(' ');
     exec(cmd, function(err, stdout, stderr) {
         t.ifError(err, 'user exists');
         stdout.split('\n').forEach(function(line) {
@@ -47,13 +47,13 @@ test('add: add features to a dataset', function(t) {
 });
 
 test('list: list datasets of user', function(t) {
-    var cmd = list;
+    var cmd = [list, '--user', 'mapbox'].join(' ');
     exec(cmd, function(err, stdout, stderr) {
         t.ifError(err, 'user exists');
         stdout.split('\n').forEach(function(line) {
             if (line) {
                 var dataset = JSON.parse(line);
-                t.equal(dataset.owner, 'jakepruitt', 'mapbox is the owner');
+                t.equal(dataset.owner, 'mapbox', 'mapbox is the owner');
                 t.ok(dataset.id, 'id exists');
                 t.ok(dataset.created, 'dataset has created property');
                 t.ok(dataset.modified, 'dataset has modified property');
@@ -64,7 +64,7 @@ test('list: list datasets of user', function(t) {
 });
 
 test('list: list features of a dataset', function(t) {
-    var cmd = [list, testDataset].join(' ');
+    var cmd = [list, testDataset, '--user', 'mapbox'].join(' ');
     exec(cmd, function(err, stdout, stderr) {
         t.ifError(err, 'dataset exists');
         var feature = JSON.parse(stdout);
@@ -75,7 +75,7 @@ test('list: list features of a dataset', function(t) {
 
 test('delete: delete features of a dataset', function(t) {
     var testFeature = testFeatures.shift();
-    var cmd = [dataDelete, testDataset, testFeature].join(' ');
+    var cmd = [dataDelete, testDataset, testFeature, '--user', 'mapbox'].join(' ');
 
     exec(cmd, function(err, stdout, stderr) {
         t.ifError(err, 'feature was deleted');
@@ -84,7 +84,7 @@ test('delete: delete features of a dataset', function(t) {
 });
 
 test('delete: delete an entire dataset', function(t) {
-    var cmd = [dataDelete, testDataset].join(' ');
+    var cmd = [dataDelete, testDataset, '--user', 'mapbox'].join(' ');
 
     exec(cmd, function(err, stdout, stderr) {
         t.ifError(err, 'dataset was deleted');
