@@ -1,14 +1,33 @@
 #!/usr/bin/env node
 
 require('update-notifier')({ pkg: require('./package.json') }).notify();
-var add = require('./lib/add');
+var MapboxDatasets = require('mapbox/lib/services/datasets');
+var getInput = require('./lib/util/get_input');
+var queue = require('queue-async');
 var argv = require('yargs')
-    .usage('Usage: [user] [mapid or datasetid] [data?]')
+    .usage('Usage: mapbox-data-add <mapid or datasetid> <filename> [--user userid]')
     .demand(2)
     .argv;
 
-console.error('adding new features');
-add(argv._[0], argv._[1], argv._[2], function(err, res, data) {
-    if (err) throw err;
-    console.error('added/uploaded %s features', JSON.parse(data).features.length);
+var opts = argv.user ? { account: argv.user } : {};
+var client = new MapboxDatasets(process.env.MapboxAccessToken, opts);
+
+getInput(argv._[1], function(err, features) {
+    var bulkUpdate = client.bulkFeatureUpdate.bind(client);
+    
+    (function makeRequest(leftToDo) {
+        var body = {
+            put: leftToDo.splice(0, 100)
+        };
+
+        client.bulkFeatureUpdate(body, argv._[0], function(err, data) {
+            if (err) throw err;
+
+            data.put.forEach(function(feature) {
+                console.log(JSON.stringify(feature));
+            });
+
+            if (leftToDo.length) return makeRequest(leftToDo); 
+        });
+    })(features);
 });

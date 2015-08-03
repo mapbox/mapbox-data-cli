@@ -7,14 +7,16 @@
     "mapbox-data-get": "mapbox-data-get",
     "mapbox-data-replace": "mapbox-data-replace",
     "mapbox-data-create": "mapbox-data-create",
-    "mapbox-data-add": "mapbox-data-add"
+    "mapbox-data-add": "mapbox-data-add",
+    "mapbox-data-delete": "mapbox-data-delete",
+    "mapbox-data-list": "mapbox-data-list"
   },
   "scripts": {
     "test": "tape test/test.js"
   },
   "keywords": [
     "mapbox",
-    "markers",
+    "dataset",
     "cli"
   ],
   "author": "Tom MacWright",
@@ -25,6 +27,8 @@
     "geojsonhint": "^1.0.0",
     "get-stdin": "^4.0.1",
     "got": "^3.2.0",
+    "hat": "0.0.3",
+    "mapbox": "^0.6.2",
     "queue-async": "^1.0.7",
     "update-notifier": "^0.5.0",
     "yargs": "^3.9.1"

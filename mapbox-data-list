@@ -1,0 +1,33 @@
+#!/usr/bin/env node
+
+require('update-notifier')({ pkg: require('./package.json') }).notify();
+var MapboxDatasets = require('mapbox/lib/services/datasets');
+var argv = require('yargs')
+    .usage('Usage: mapbox-data-list [mapid or datasetid] [--user userid]')
+    .demand(0, 1)
+    .argv;
+
+var opts = argv.user ? { account: argv.user } : {};
+var client = new MapboxDatasets(process.env.MapboxAccessToken, opts);
+
+if (argv._[0]) {
+    client.listFeatures(argv._[0], function(err, res) {
+        if (err && err.statusCode === 404) {
+            console.error('Error: user not found (are you using a token with datasets:write scope?)');
+            throw err;
+        }
+        if (err) throw err;
+        console.log(JSON.stringify(res));
+    });
+} else {
+    client.listDatasets(function(err, res) {
+        if (err && err.statusCode === 404) {
+            console.error('Error: dataset not found (are you using a token with datasets:write scope?)');
+            throw err;
+        }
+        if (err) throw err;
+        res.forEach(function(feature) {
+            console.log(JSON.stringify(feature));
+        });
+    });
+}

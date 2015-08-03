@@ -1,4 +1,4 @@
-# mapbox-markers-cli
+# mapbox-data-cli
 
 [![build status](https://secure.travis-ci.org/mapbox/mapbox-data-cli.png)](http://travis-ci.org/mapbox/mapbox-data-cli)
 
