@@ -12,7 +12,7 @@
     "mapbox-data-list": "mapbox-data-list"
   },
   "scripts": {
-    "test": "tape test/test.js"
+    "test": "tape test/*.js"
   },
   "keywords": [
     "mapbox",
