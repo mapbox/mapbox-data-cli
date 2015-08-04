@@ -2,10 +2,10 @@
 
 require('update-notifier')({ pkg: require('./package.json') }).notify();
 var MapboxDatasets = require('mapbox/lib/services/datasets');
-var getInput = require('./lib/util/get_input');
+var getInput = require('./lib/get_input');
 var argv = require('yargs')
-    .usage('Usage: mapbox-data-add <mapid or datasetid> <filename> [--user userid]')
-    .demand(2)
+    .usage('Usage: mapbox-data-add <mapid or datasetid> [filename] [--user userid]')
+    .demand(1, 2)
     .argv;
 
 var opts = argv.user ? { account: argv.user } : {};
