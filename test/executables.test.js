@@ -8,6 +8,7 @@ var create = path.resolve(__dirname, '..', 'mapbox-data-create');
 var dataDelete = path.resolve(__dirname, '..', 'mapbox-data-delete');
 var add = path.resolve(__dirname, '..', 'mapbox-data-add');
 var get = path.resolve(__dirname, '..', 'mapbox-data-get');
+var replace = path.resolve(__dirname, '..', 'mapbox-data-replace');
 
 var validFeatures = path.resolve(__dirname, 'fixtures', 'features.json');
 
@@ -39,8 +40,24 @@ test('add: add features to a dataset', function(t) {
                 var feature = JSON.parse(line);
                 t.equal(feature.type, 'Feature', 'mapbox is the owner');
                 t.ok(feature.id, 'id exists');
-                testFeatures.push(feature.id);
                 t.ok(feature.geometry, 'dataset has created property');
+            }
+        });
+        t.end();
+    });
+});
+
+test('replace: replace features of a dataset', function(t) {
+    var cmd = [replace, testDataset, validFeatures, '--user', 'mapbox'].join(' ');
+    exec(cmd, function(err, stdout, stderr) {
+        t.ifError(err, 'dataset exists');
+        stdout.split('\n').forEach(function(line) {
+            if (line) {
+                var feature = JSON.parse(line);
+                t.equal(feature.type, 'Feature', 'mapbox is the owner');
+                t.ok(feature.id, 'id exists');
+                t.ok(feature.geometry, 'dataset has created property');
+                testFeatures.push(feature.id);
             }
         });
         t.end();

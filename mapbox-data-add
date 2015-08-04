@@ -3,7 +3,6 @@
 require('update-notifier')({ pkg: require('./package.json') }).notify();
 var MapboxDatasets = require('mapbox/lib/services/datasets');
 var getInput = require('./lib/util/get_input');
-var queue = require('queue-async');
 var argv = require('yargs')
     .usage('Usage: mapbox-data-add <mapid or datasetid> <filename> [--user userid]')
     .demand(2)
@@ -13,8 +12,6 @@ var opts = argv.user ? { account: argv.user } : {};
 var client = new MapboxDatasets(process.env.MapboxAccessToken, opts);
 
 getInput(argv._[1], function(err, features) {
-    var bulkUpdate = client.bulkFeatureUpdate.bind(client);
-    
     (function makeRequest(leftToDo) {
         var body = {
             put: leftToDo.splice(0, 100)
