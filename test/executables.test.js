@@ -7,6 +7,7 @@ var list = path.resolve(__dirname, '..', 'mapbox-data-list');
 var create = path.resolve(__dirname, '..', 'mapbox-data-create');
 var dataDelete = path.resolve(__dirname, '..', 'mapbox-data-delete');
 var add = path.resolve(__dirname, '..', 'mapbox-data-add');
+var get = path.resolve(__dirname, '..', 'mapbox-data-get');
 
 var validFeatures = path.resolve(__dirname, 'fixtures', 'features.json');
 
@@ -69,6 +70,26 @@ test('list: list features of a dataset', function(t) {
         t.ifError(err, 'dataset exists');
         var feature = JSON.parse(stdout);
         t.ok(feature, 'list is the expected list');
+        t.end();
+    });
+});
+
+test('get: get description of a dataset', function(t) {
+    var cmd = [get, testDataset, '--user', 'mapbox'].join(' ');
+    exec(cmd, function(err, stdout, stderr) {
+        t.ifError(err, 'dataset exsts');
+        var dataset = JSON.parse(stdout);
+        t.equal(dataset.id, testDataset);
+        t.end();
+    });
+});
+
+test('get: get description of a tileset', function(t) {
+    var cmd = [get, testDataset, testFeatures[0], '--user', 'mapbox'].join(' ');
+    exec(cmd, function(err, stdout, stderr) {
+        t.ifError(err, 'fixture exsts');
+        var feature = JSON.parse(stdout);
+        t.equal(feature.id, testFeatures[0]);
         t.end();
     });
 });

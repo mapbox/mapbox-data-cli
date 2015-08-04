@@ -1,13 +1,31 @@
 #!/usr/bin/env node
 
 require('update-notifier')({ pkg: require('./package.json') }).notify();
-var get = require('./lib/get');
+var MapboxDatasets = require('mapbox/lib/services/datasets');
 var argv = require('yargs')
-    .usage('Usage: [user] [mapid or datasetid]')
-    .demand(2)
+    .usage('Usage: mapbox-data-get <datasetid> [featureid] [--user userid]')
+    .demand(1, 2)
     .argv;
 
-get(argv._[0], argv._[1], function(err, res) {
-    if (err) throw err;
-    console.log(res);
-});
+var opts = argv.user ? { account: argv.user } : {};
+var client = new MapboxDatasets(process.env.MapboxAccessToken, opts);
+
+if (argv._[1]) {
+    client.readFeature(argv._[1], argv._[0], function(err, feature) {
+        if (err && err.statusCode === 404) {
+            console.error('Error: feature not found (make sure your MapboxAccessToken environment variable has the datasets:write scope)');
+            throw err;
+        }
+        if (err) throw err;
+        console.log(JSON.stringify(feature));
+    });
+} else {
+    client.readDataset(argv._[0], function(err, dataset) {
+        if (err && err.statusCode === 404) {
+            console.error('Error: dataset not found (make sure your MapboxAccessToken environment variable has the datasets:write scope)');
+            throw err;
+        }
+        if (err) throw err;
+        console.log(JSON.stringify(dataset));
+    });
+}
