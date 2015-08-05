@@ -3,12 +3,7 @@ var path = require('path');
 var queue = require('queue-async');
 var test = require('tape').test;
 
-var list = path.resolve(__dirname, '..', 'mapbox-data-list');
-var create = path.resolve(__dirname, '..', 'mapbox-data-create');
-var dataDelete = path.resolve(__dirname, '..', 'mapbox-data-delete');
-var add = path.resolve(__dirname, '..', 'mapbox-data-add');
-var get = path.resolve(__dirname, '..', 'mapbox-data-get');
-var replace = path.resolve(__dirname, '..', 'mapbox-data-replace');
+var mbdata = path.resolve(__dirname, '..', 'mapbox-data');
 
 var validFeatures = path.resolve(__dirname, 'fixtures', 'features.json');
 
@@ -18,7 +13,7 @@ var testFeatures = [];
 process.env.PATH = [ path.resolve(__dirname, '..'), process.env.PATH ].join(':');
 
 test('create: create a dataset', function(t) {
-    var cmd = [create, '--user', 'mapbox'].join(' ');
+    var cmd = [mbdata, 'create-dataset', '--user', 'mapbox'].join(' ');
     exec(cmd, function(err, stdout, stderr) {
         t.ifError(err, 'user exists');
         var dataset = JSON.parse(stdout);
@@ -32,7 +27,7 @@ test('create: create a dataset', function(t) {
 });
 
 test('add: add features to a dataset', function(t) {
-    var cmd = [add, testDataset, validFeatures, '--user', 'mapbox'].join(' ');
+    var cmd = [mbdata, 'insert-features', testDataset, validFeatures, '--user', 'mapbox'].join(' ');
     exec(cmd, function(err, stdout, stderr) {
         t.ifError(err, 'user exists');
         stdout.split('\n').forEach(function(line) {
@@ -48,7 +43,7 @@ test('add: add features to a dataset', function(t) {
 });
 
 test('replace: replace features of a dataset', function(t) {
-    var cmd = [replace, testDataset, validFeatures, '--user', 'mapbox'].join(' ');
+    var cmd = [mbdata, 'replace-dataset', testDataset, validFeatures, '--user', 'mapbox'].join(' ');
     exec(cmd, function(err, stdout, stderr) {
         t.ifError(err, 'dataset exists');
         stdout.split('\n').forEach(function(line) {
@@ -65,7 +60,7 @@ test('replace: replace features of a dataset', function(t) {
 });
 
 test('list: list datasets of user', function(t) {
-    var cmd = [list, '--user', 'mapbox'].join(' ');
+    var cmd = [mbdata, 'list-datasets', '--user', 'mapbox'].join(' ');
     exec(cmd, function(err, stdout, stderr) {
         t.ifError(err, 'user exists');
         stdout.split('\n').forEach(function(line) {
@@ -82,17 +77,24 @@ test('list: list datasets of user', function(t) {
 });
 
 test('list: list features of a dataset', function(t) {
-    var cmd = [list, testDataset, '--user', 'mapbox'].join(' ');
+    var cmd = [mbdata, 'list-features', testDataset, '--user', 'mapbox'].join(' ');
     exec(cmd, function(err, stdout, stderr) {
         t.ifError(err, 'dataset exists');
-        var feature = JSON.parse(stdout);
-        t.ok(feature, 'list is the expected list');
+        stdout.split('\n').forEach(function(line) {
+            if (line) {
+                var feature = JSON.parse(line);
+                t.equal(feature.type, 'Feature', 'mapbox is the owner');
+                t.ok(feature.id, 'id exists');
+                t.ok(feature.properties, 'dataset has created property');
+                t.ok(feature.geometry, 'dataset has modified property');
+            }
+        });
         t.end();
     });
 });
 
 test('get: get description of a dataset', function(t) {
-    var cmd = [get, testDataset, '--user', 'mapbox'].join(' ');
+    var cmd = [mbdata, 'get-dataset', testDataset, '--user', 'mapbox'].join(' ');
     exec(cmd, function(err, stdout, stderr) {
         t.ifError(err, 'dataset exsts');
         var dataset = JSON.parse(stdout);
@@ -101,8 +103,8 @@ test('get: get description of a dataset', function(t) {
     });
 });
 
-test('get: get description of a tileset', function(t) {
-    var cmd = [get, testDataset, testFeatures[0], '--user', 'mapbox'].join(' ');
+test('get: get description of a feature', function(t) {
+    var cmd = [mbdata, 'get-feature', testDataset, testFeatures[0], '--user', 'mapbox'].join(' ');
     exec(cmd, function(err, stdout, stderr) {
         t.ifError(err, 'fixture exsts');
         var feature = JSON.parse(stdout);
@@ -113,7 +115,7 @@ test('get: get description of a tileset', function(t) {
 
 test('delete: delete features of a dataset', function(t) {
     var testFeature = testFeatures.shift();
-    var cmd = [dataDelete, testDataset, testFeature, '--user', 'mapbox'].join(' ');
+    var cmd = [mbdata, 'delete-feature', testDataset, testFeature, '--user', 'mapbox'].join(' ');
 
     exec(cmd, function(err, stdout, stderr) {
         t.ifError(err, 'feature was deleted');
@@ -122,7 +124,7 @@ test('delete: delete features of a dataset', function(t) {
 });
 
 test('delete: delete an entire dataset', function(t) {
-    var cmd = [dataDelete, testDataset, '--user', 'mapbox'].join(' ');
+    var cmd = [mbdata, 'delete-dataset', testDataset, '--user', 'mapbox'].join(' ');
 
     exec(cmd, function(err, stdout, stderr) {
         t.ifError(err, 'dataset was deleted');

@@ -4,12 +4,7 @@
   "description": "download and upload mapbox data as geojson",
   "main": "index.js",
   "bin": {
-    "mapbox-data-get": "mapbox-data-get",
-    "mapbox-data-replace": "mapbox-data-replace",
-    "mapbox-data-create": "mapbox-data-create",
-    "mapbox-data-add": "mapbox-data-add",
-    "mapbox-data-delete": "mapbox-data-delete",
-    "mapbox-data-list": "mapbox-data-list"
+    "mapbox-data": "mapbox-data"
   },
   "scripts": {
     "test": "tape test/*.js"
