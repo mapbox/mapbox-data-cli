@@ -1,0 +1,117 @@
+#!/usr/bin/env node
+
+require('update-notifier')({ pkg: require('./package.json') }).notify();
+var MapboxDatasets = require('mapbox/lib/services/datasets');
+var getInput = require('./lib/get_input');
+var argv = require('yargs')
+    .usage('Usage: mapbox-data [options] <command> [parameters]')
+    .help('h')
+    .alias('h', 'help')
+    .alias('u', 'user')
+    .describe('u', 'Operate on the datasets for a particular user')
+    .alias('d', 'dump')
+    .describe('d', 'Output in one JSON object rather than line-delimited list of JSON objects')
+    .command('create-dataset', 'Create a new dataset with a name and/or description')
+    .command('list-datasets', 'List the datasets belonging to a user')
+    .command('list-features', 'List the features in a dataset')
+    .command('get-dataset', 'Read information about a dataset')
+    .command('get-feature', 'Get information about a specific feature in a dataset')
+    .command('insert-features', 'Upload a geojson file to a dataset')
+    .command('replace-dataset', 'Delete all of the data in a dataset and replace with a geojson file')
+    .command('delete-feature', 'Delete a feature from a dataset')
+    .command('delete-dataset', 'Delete a dataset')
+    .demand(1, 3)
+    .example('mapbox-data create-dataset')
+    .example('mapbox-data insert-features id file.json')
+    .example('mapbox-data list-features id')
+    .argv;
+
+var opts = argv.user ? { account: argv.user } : {};
+var client = new MapboxDatasets(process.env.MapboxAccessToken, opts);
+
+var cmds = {
+    'insert-features': bulkInsert(argv._[1], argv._[2]),
+    'replace-dataset': bulkReplace(argv._[1], argv._[2]),
+    'create-dataset': client.createDataset.bind(client, {name:argv._[1], description:argv._[2]}),
+    'list-features': client.listFeatures.bind(client, argv._[1]),
+    'list-datasets': client.listDatasets.bind(client),
+    'delete-feature': client.deleteFeature.bind(client, argv._[2], argv._[1]),
+    'delete-dataset': client.deleteDataset.bind(client, argv._[1]),
+    'get-feature': client.readFeature.bind(client, argv._[2], argv._[1]),
+    'get-dataset': client.readDataset.bind(client, argv._[1]),
+};
+
+var cmd = argv._[0];
+cmds[cmd](handler);
+
+function handler(err, result) {
+    if (err) return console.error(err);
+    if (result === undefined) return console.error(err);
+
+    if (argv.dump) {
+        return console.log(JSON.stringify(result));
+    } else {
+        result = result.type === 'FeatureCollection' ? result.features : result;
+        if (result instanceof Array) {
+            return result.forEach(function(line) {
+                console.log(JSON.stringify(line));
+            });
+        }
+        return console.log(JSON.stringify(result));
+    }
+}
+
+function bulkInsert(dataset, filename) {
+    return function(cb) {
+        var result = [];
+
+        getInput(filename, function(err, features) {
+            if (err) return cb(err);
+
+            return makeRequest(features, dataset, result, cb);
+        });
+    };
+}
+
+function bulkReplace(dataset, filename) {
+    return function(cb) {
+        var result = [];
+
+        getInput(filename, function(err, newFeatures) {
+            if (err) return cb(err);
+            client.listFeatures(dataset, function(err, oldFeatures) {
+                if (err) return cb(err);
+
+                oldFeatures = oldFeatures.features.map(function(feature) {
+                    return feature.id;
+                });
+
+                var toDo = oldFeatures.concat(newFeatures);
+
+                return makeRequest(toDo, dataset, result, cb);
+            });
+        });
+    };
+}
+
+function makeRequest(leftToDo, dataset, result, cb) {
+    var body = leftToDo.splice(0, 100).reduce(function(body, item) {
+        if (item.type === 'Feature') {
+            if (!body.put) body.put = [];
+            body.put.push(item);
+        } else {
+            if (!body.delete) body.delete = [];
+            body.delete.push(item);
+        }
+        return body;
+    }, {});
+
+    client.bulkFeatureUpdate(body, dataset, function(err, data) {
+        if (err) return cb(err);
+
+        result = result.concat(data.put);
+
+        if (leftToDo.length) return makeRequest(leftToDo, dataset, result, cb); 
+        return cb(null, result);
+    });
+}
