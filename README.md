@@ -14,39 +14,37 @@ $ npm install -g mapbox-data-cli
 
 ## Setup
 
-Requires a `MapboxAccessToken` environment variable with map:write permissions.
+Requires a `MapboxAccessToken` environment variable with data:write permissions.
 
 ## Utilities
 
-Includes three utilities
+Includes nine utilities
 
-* `mapbox-data-get`: get [GeoJSON](http://geojson.org/) data
-* `mapbox-data-add`: add/update features in a dataset
-* `mapbox-data-replace`: replace dataset with new GeoJSON data
+* `mapbox-data get-dataset`: read information about a particular dataset
+* `mapbox-data get-feature`: get individual feature from dataset
+* `mapbox-data create-dataset`: create a new empty dataset with optional name and description
+* `mapbox-data insert-features`: add/update features in a dataset
+* `mapbox-data replace-dataset`: replace dataset with new GeoJSON data
+* `mapbox-data list-datasets`: list all datasets belonging to a user
+* `mapbox-data list-features`: get all [GeoJSON](http://geojson.org/) features within a dataset
+* `mapbox-data delete-feature`: delete a feature from within a dataset
+* `mapbox-data delete-dataset`: delete an entire dataset
 
-DATASETID can either be a dataset id (preferred) or a map id. If a map id
-is given, mapbox-markers-cli will infer the dataset id.
-
-```sh
-$ npm install -g mapbox-markers-cli
-$ mapbox-data-get USERNAME DATASETID
-$ mapbox-data-add USERNAME DATASETID FILE
-$ mapbox-data-replace USERNAME DATASETID FILE
-```
-
-`mapbox-data-create` creates a new empty dataset. NAME and DESCRIPTION are
-optional.
 
 ```sh
-$ mapbox-data-create USERNAME [NAME] [DESCRIPTION]
+$ npm install -g mapbox-data-cli
+$ mapbox-data create-dataset "Traffic Data" "Traffic data for Phoenix area"
+{"owner":"smith","id":"6dcc766430756d74120b9e5ff1c9d4dd","name":"Traffic Patterns,","description":"Traffic in the Pheonix Valley","created":"2015-08-05T02:35:59.828Z","modifie$
+":"2015-08-05T02:35:59.828Z"}
+$ mapbox-data insert-features 6dcc766430756d74120b9e5ff1c9d4dd traffic.json
 ```
 
 ## Pipes
 
-`mapbox-data-add` and `mapbox-data-replace` support stdin: you can pipe
+`mapbox-data insert-features` and `mapbox-data replace-dataset` support stdin: you can pipe
 into them, and they'll put the data on [Mapbox](https://www.mapbox.com/).
 
 ```sh
 $ npm install -g geojson-random # util that generates random geojson
-$ geojson-random | mapbox-data-add USERNAME DATASETID
+$ geojson-random | mapbox-data insert-features DATASETID
 ```
