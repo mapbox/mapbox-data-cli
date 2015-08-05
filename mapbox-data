@@ -9,6 +9,8 @@ var argv = require('yargs')
     .alias('h', 'help')
     .alias('u', 'user')
     .describe('u', 'Operate on the datasets for a particular user')
+    .alias('d', 'dump')
+    .describe('d', 'Output in one JSON object rather than line-delimited list of JSON objects')
     .command('create-dataset', 'Create a new dataset with a name and/or description')
     .command('list-datasets', 'List the datasets belonging to a user')
     .command('list-features', 'List the features in a dataset')
@@ -39,17 +41,24 @@ var cmds = {
     'get-dataset': client.readDataset.bind(client, argv._[1]),
 };
 
-cmds[argv._[0]](handler);
+var cmd = argv._[0];
+cmds[cmd](handler);
 
 function handler(err, result) {
-    if (err || result === undefined) return console.error(err);
-    result = result.type === 'FeatureCollection' ? result.features : result;
-    if (result instanceof Array) {
-        return result.forEach(function(line) {
-            console.log(JSON.stringify(line));
-        });
+    if (err) return console.error(err);
+    if (result === undefined) return console.error(err);
+
+    if (argv.dump) {
+        return console.log(JSON.stringify(result));
+    } else {
+        result = result.type === 'FeatureCollection' ? result.features : result;
+        if (result instanceof Array) {
+            return result.forEach(function(line) {
+                console.log(JSON.stringify(line));
+            });
+        }
+        return console.log(JSON.stringify(result));
     }
-    return console.log(JSON.stringify(result));
 }
 
 function bulkInsert(dataset, filename) {

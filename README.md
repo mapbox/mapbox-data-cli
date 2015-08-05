@@ -39,6 +39,8 @@ $ mapbox-data create-dataset "Traffic Data" "Traffic data for Phoenix area"
 $ mapbox-data insert-features 6dcc766430756d74120b9e5ff1c9d4dd traffic.json
 ```
 
+The output of the `list`, `insert`, and `replace` commands are line-delimited JSON objects of each feature. If you would like to have the JSON object of the whole FeatureCollection, use the `--dump` option.
+
 ## Pipes
 
 `mapbox-data insert-features` and `mapbox-data replace-dataset` support stdin: you can pipe
