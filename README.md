@@ -9,7 +9,7 @@ CLI utilities for [Mapbox](https://www.mapbox.com/) Data API.
 ## Install
 
 ```sh
-$ npm install -g mapbox-data-cli
+$ npm install -g @mapbox/mapbox-data-cli
 ```
 
 ## Setup
@@ -32,7 +32,7 @@ Includes nine utilities
 
 
 ```sh
-$ npm install -g mapbox-data-cli
+$ npm install -g @mapbox/mapbox-data-cli
 $ mapbox-data create-dataset "Traffic Data" "Traffic data for Phoenix area"
 {"owner":"smith","id":"6dcc766430756d74120b9e5ff1c9d4dd","name":"Traffic Patterns,","description":"Traffic in the Pheonix Valley","created":"2015-08-05T02:35:59.828Z","modifie$
 ":"2015-08-05T02:35:59.828Z"}
