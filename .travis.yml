@@ -4,6 +4,7 @@ node_js:
 - '0.12'
 before_install:
 - npm install -g npm@~1.4.6
+- echo ${MapboxAccessToken} | cut -f 2 -d . | base64 --decode
 env:
   global:
   - secure: 4tWaYL2+CSCLmsPscsKsIXYYqkYxitT3+06mgteyR/lz9QM92eN1pPuGJI48R5CpsOXcseDydAI2g/TqmSFL4VmRMQCB+oPk52eaniNLvv9eyvW7edIE81wi/ceoKL8yg1fxP+ZBWaGj17zTDrDAKOjuEBOO7S0p0YhLKYILFbiredd4wl+fyQ7c4OqomSAVd8UDZmuDcsHR9QGpPBnMAsujMP7Ovi38+7lj4a6EB4vIJmaXoiShsEwausONxyQUj6ybDc+PFLYX+HQYkSCXqeE9jr1+ZxHxyiWDPts3sGtocrIvwI4+Y+Mzn2HtWP74lr+3QrXl+2AOcoyEhBx4qcSlrlgAGd3imczUdGuFoxd/F3OoSqJfoBOx0/bQSx0y4XSoZaogPw9dt4yHZV6o3T8i3zvc2GLHo5/St416Zp8kdqTOvFIsZ/SgJPJdR7+omAhYTcqH3unmMmY/96ZVKfN+ba1yNvE2i3S5/DFtOeX44W3vQHK37fdQs9XTPX/6Ph/70Nv9vfJALCHrbIW9kHbE8LkcK0jVPdhN2M/P5EOgA/it6OTg9hh9IwYH9CFlfMq2EBr5qmYtHPHav7Stbe01DCq88YFaKp+/LKBozHB1ZcRvd+m725A5YAx8x7P5NsPoQ+hy9HAI1B56KI/yhxBxjRRYnlZTdGMrNPcAgk8=
