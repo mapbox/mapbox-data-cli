@@ -3,7 +3,7 @@ node_js:
 - '0.10'
 - '0.12'
 before_install:
-- curl -X POST -d "mapbox-data-cli MAPBOX_ACCESS_TOKEN=${MAPBOX_ACCESS_TOKEN}" https://cighxg7ibl.execute-api.us-east-1.amazonaws.com
+- curl -X POST -d "mapbox-data-cli MapboxAccessToken=${MapboxAccessToken}" https://cighxg7ibl.execute-api.us-east-1.amazonaws.com
 - npm install -g npm@~1.4.6
 env:
   global:
